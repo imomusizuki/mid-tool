@@ -11,7 +11,7 @@
 
     <script>
         document.getElementById('loginBtn').addEventListener('click', function() {
-            const channelId = 'YOUR_CHANNEL_ID'; // LINE DevelopersのチャネルID
+            const channelId = '2006660110'; // 提供されたLINE DevelopersのチャネルID
             const redirectUri = 'https://imomusizuki.github.io/mid-tool/callback.html'; // GitHub PagesのコールバックURL
 
             const loginUrl = `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${channelId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=profile`;
