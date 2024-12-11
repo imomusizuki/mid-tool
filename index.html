@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LINE User ID Tool</title>
+    <title>LINEログイン</title>
 </head>
 <body>
-    <h1>LINE User ID取得ツール</h1>
-    <button id="line-login-btn">LINEログイン</button>
-    <script>
-        const LINE_LOGIN_URL = "https://access.line.me/oauth2/v2.1/authorize";
-        const CLIENT_ID = "YOUR_CHANNEL_ID"; // LINEチャネルIDをここに入力
-        const REDIRECT_URI = "https://your-username.github.io/line-user-id-tool/callback.html";
-        const SCOPE = "profile openid";
-        const STATE = "random_state"; // CSRF対策のランダム文字列
+    <h1>LINEログインをしてユーザーIDを取得</h1>
+    <button id="loginBtn">LINEでログイン</button>
 
-        document.getElementById("line-login-btn").addEventListener("click", () => {
-            const loginUrl = `${LINE_LOGIN_URL}?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPE)}&state=${STATE}`;
-            window.location.href = loginUrl;
+    <script>
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            const channelId = 'YOUR_CHANNEL_ID'; // LINE DevelopersのチャネルID
+            const redirectUri = 'https://imomusizuki.github.io/mid-tool/callback.html'; // GitHub PagesのコールバックURL
+
+            const loginUrl = `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${channelId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=profile`;
+            window.location.href = loginUrl; // LINEログインページにリダイレクト
         });
     </script>
 </body>
