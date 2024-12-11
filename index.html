@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LINE User ID Tool</title>
+</head>
+<body>
+    <h1>LINE User ID取得ツール</h1>
+    <button id="line-login-btn">LINEログイン</button>
+    <script>
+        const LINE_LOGIN_URL = "https://access.line.me/oauth2/v2.1/authorize";
+        const CLIENT_ID = "YOUR_CHANNEL_ID"; // LINEチャネルIDをここに入力
+        const REDIRECT_URI = "https://your-username.github.io/line-user-id-tool/callback.html";
+        const SCOPE = "profile openid";
+        const STATE = "random_state"; // CSRF対策のランダム文字列
+
+        document.getElementById("line-login-btn").addEventListener("click", () => {
+            const loginUrl = `${LINE_LOGIN_URL}?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPE)}&state=${STATE}`;
+            window.location.href = loginUrl;
+        });
+    </script>
+</body>
+</html>
