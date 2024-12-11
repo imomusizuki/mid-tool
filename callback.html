@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LINE Login Callback</title>
+</head>
+<body>
+    <h1>LINEログイン成功</h1>
+    <div id="output"></div>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
+        const state = params.get("state");
+
+        if (code) {
+            // トークン取得API呼び出し
+            fetch("https://api.line.me/oauth2/v2.1/token", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({
+                    grant_type: "authorization_code",
+                    code: code,
+                    redirect_uri: "https://your-username.github.io/line-user-id-tool/callback.html",
+                    client_id: "YOUR_CHANNEL_ID", // LINEチャネルIDをここに入力
+                    client_secret: "YOUR_CHANNEL_SECRET" // LINEチャネルシークレットをここに入力
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const accessToken = data.access_token;
+                // プロファイル取得API呼び出し
+                return fetch("https://api.line.me/v2/profile", {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                });
+            })
+            .then(response => response.json())
+            .then(profile => {
+                document.getElementById("output").innerHTML = `
+                    <p>ユーザーID: ${profile.userId}</p>
+                    <p>名前: ${profile.displayName}</p>
+                    <img src="${profile.pictureUrl}" alt="Profile Picture" width="100">
+                `;
+            })
+            .catch(err => console.error("Error:", err));
+        } else {
+            document.getElementById("output").textContent = "LINEログインがキャンセルされました。";
+        }
+    </script>
+</body>
+</html>
