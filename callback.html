@@ -3,53 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LINE Login Callback</title>
+    <title>LINEログイン結果</title>
 </head>
 <body>
-    <h1>LINEログイン成功</h1>
-    <div id="output"></div>
+    <h1>LINEログイン結果</h1>
+    <p id="userId">ユーザーID: 認証中...</p>
+
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const code = params.get("code");
-        const state = params.get("state");
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code'); // 認証コードを取得
 
         if (code) {
-            // トークン取得API呼び出し
-            fetch("https://api.line.me/oauth2/v2.1/token", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
+            fetch('https://api.line.me/oauth2/v2.1/token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({
-                    grant_type: "authorization_code",
+                    grant_type: 'authorization_code',
                     code: code,
-                    redirect_uri: "https://your-username.github.io/line-user-id-tool/callback.html",
-                    client_id: "YOUR_CHANNEL_ID", // LINEチャネルIDをここに入力
-                    client_secret: "YOUR_CHANNEL_SECRET" // LINEチャネルシークレットをここに入力
+                    redirect_uri: 'https://imomusizuki.github.io/mid-tool/callback.html', // コールバックURL
+                    client_id: '2006660110', // 提供されたチャネルID
+                    client_secret: 'e5de0e36f112fcbac67c79ce80a233bc' // 提供されたチャネルシークレット
                 })
             })
             .then(response => response.json())
             .then(data => {
                 const accessToken = data.access_token;
-                // プロファイル取得API呼び出し
-                return fetch("https://api.line.me/v2/profile", {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`
-                    }
+                fetch('https://api.line.me/v2/profile', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                })
+                .then(response => response.json())
+                .then(profileData => {
+                    document.getElementById('userId').textContent = `ユーザーID: ${profileData.userId}`;
                 });
-            })
-            .then(response => response.json())
-            .then(profile => {
-                document.getElementById("output").innerHTML = `
-                    <p>ユーザーID: ${profile.userId}</p>
-                    <p>名前: ${profile.displayName}</p>
-                    <img src="${profile.pictureUrl}" alt="Profile Picture" width="100">
-                `;
-            })
-            .catch(err => console.error("Error:", err));
-        } else {
-            document.getElementById("output").textContent = "LINEログインがキャンセルされました。";
+            });
         }
     </script>
 </body>
